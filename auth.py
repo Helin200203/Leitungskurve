@@ -1,4 +1,4 @@
-# auth.py
+#auth
 import streamlit as st
 import streamlit_authenticator as stauth
 import yaml
@@ -20,8 +20,8 @@ def get_authenticator():
     config = load_credentials()
     authenticator = stauth.Authenticate(
         config['credentials'],
-        'cookie_name', 
-        'signature_key', 
+        'your_cookie_name',
+        'your_signature_key',
         cookie_expiry_days=30
     )
     return authenticator, config
