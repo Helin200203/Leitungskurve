@@ -5,10 +5,6 @@ from ekgdata import EKGDaten
 import plotly.graph_objects as go
 from auth import get_authenticator, register_user
 from utils import berechne_bmi, berechne_kalorienbedarf, bmi_bereich  
-from database import create_table, insert_user, update_user_data, get_user_data  # Importiere die Funktionen aus database.py
-
-# Datenbank initialisieren
-create_table()
 # Authentifikator und Konfiguration laden
 authenticator, config = get_authenticator()
 
