@@ -16,8 +16,22 @@ if option == "Login":
     name, authentication_status, username = authenticator.login("main")
 
     if authentication_status:
+        if 'user_data' not in st.session_state:
+            st.session_state.user_data = {
+                'gewicht': 0.0,
+                'groesse': 0.0,
+                'geschlecht': 'Männlich',
+                'alter': 0,
+                'aktivitaetslevel': 'Wenig aktiv',
+                'bmi': 0.0,
+                'kalorienbedarf': 0.0,
+                'meals': [],
+                'workouts': []
+            }
+
+        user_data = st.session_state.user_data
         # Haupt-Tabs für verschiedene Bereiche
-        tabs = st.tabs(["EKG-Daten","BMI & Kalorienbedraf", "KI-Funktionalitäten", "Datenbank-Verwaltung"])
+        tabs = st.tabs(["EKG-Daten","BMI & Kalorienbedraf", "Mahlzeiten & Sport", "KI-Funktionalitäten", "Datenbank-Verwaltung"])
 
         with tabs[0]:  # EKG-Daten Bereich
             # Laden der Personendaten und Erstellen der Namensliste
@@ -113,7 +127,15 @@ if option == "Login":
             
             kalorienbedarf = berechne_kalorienbedarf(gewicht, groesse, alter, geschlecht, aktivitaetslevel)
             st.write("Ihr täglicher Kalorienbedarf ist: {:.0f} kcal".format(kalorienbedarf))
-
+            if st.button("Daten speichern"):
+                user_data['gewicht'] = gewicht
+                user_data['groesse'] = groesse
+                user_data['geschlecht'] = geschlecht
+                user_data['alter'] = alter
+                user_data['aktivitaetslevel'] = aktivitaetslevel
+                user_data['bmi'] = bmi
+                user_data['kalorienbedarf'] = kalorienbedarf
+                st.success("Daten erfolgreich gespeichert!")
             st.write("### Ernährungspyramide")
             # Hier könntest du ein Bild der Ernährungspyramide hinzufügen
             pyramide_bild = Image.open("images.jpeg")
@@ -128,13 +150,44 @@ if option == "Login":
             st.write("#### Body Positivity Zitate")
             for zitat in zitate:
                 st.write(f"- {zitat}")
+        with tabs[2]:  # Mahlzeiten & Sport Bereich
+            st.write("# Mahlzeiten & Sport")
+            
+            st.write("### Mahlzeiten tracken")
+            meal_date = st.date_input("Datum", key="meal_date")
+            meal_name = st.text_input("Mahlzeit", key="meal_name")
+            meal_calories = st.number_input("Kalorien", min_value=0.0, step=0.1, key="meal_calories")
+            if st.button("Mahlzeit hinzufügen"):
+                user_data['meals'].append({'date': meal_date, 'meal': meal_name, 'calories': meal_calories})
+                st.success("Mahlzeit erfolgreich hinzugefügt!")
+            
+            st.write("### Sportaktivitäten tracken")
+            workout_date = st.date_input("Datum", key="workout_date")
+            workout_name = st.text_input("Sportaktivität", key="workout_name")
+            workout_duration = st.number_input("Dauer (in Minuten)", min_value=0, step=1, key="workout_duration")
+            workout_calories_burned = st.number_input("Verbrannte Kalorien", min_value=0.0, step=0.1, key="workout_calories_burned")
+            if st.button("Sportaktivität hinzufügen"):
+                user_data['workouts'].append({'date': workout_date, 'workout': workout_name, 'duration': workout_duration, 'calories_burned': workout_calories_burned})
+                st.success("Sportaktivität erfolgreich hinzugefügt!")
+            
+            st.write("### Getrackte Mahlzeiten")
+            if meal_date:
+                meals = [meal for meal in user_data['meals'] if meal['date'] == meal_date]
+                for meal in meals:
+                    st.write(f"{meal['meal']}: {meal['calories']} kcal")
 
-        with tabs[2]:  # KI-Funktionalitäten Bereich
+            st.write("### Getrackte Sportaktivitäten")
+            if workout_date:
+                workouts = [workout for workout in user_data['workouts'] if workout['date'] == workout_date]
+                for workout in workouts:
+                    st.write(f"{workout['workout']} ({workout['duration']} Minuten): {workout['calories_burned']} kcal verbrannt")               
+
+        with tabs[3]:  # KI-Funktionalitäten Bereich
             st.write("# KI-Funktionalitäten")
             # Hier kannst du deine KI-Funktionalitäten hinzufügen
             st.write("Hier werden KI-Funktionalitäten implementiert.")
 
-        with tabs[3]:  # Datenbank-Verwaltung Bereich
+        with tabs[4]:  # Datenbank-Verwaltung Bereich
             st.write("# Datenbank-Verwaltung")
             # Hier kannst du die Datenbank-Verwaltung implementieren
             st.write("Hier wird die Datenbank-Verwaltung implementiert.")
