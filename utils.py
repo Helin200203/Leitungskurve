@@ -1,3 +1,4 @@
+# utils.py
 def berechne_bmi(gewicht, groesse):
     if groesse > 0:
         bmi = gewicht / ((groesse / 100) ** 2)

@@ -1,33 +1,9 @@
-#auth
+# auth.py
 import streamlit as st
-import streamlit_authenticator as stauth
-import yaml
-from yaml.loader import SafeLoader
 import bcrypt
+from database import register_user, get_user
 
-# Funktion zum Laden der Anmeldedaten
-def load_credentials():
-    with open('credentials.yaml') as file:
-        config = yaml.load(file, Loader=SafeLoader)
-    return config
-
-# Funktion zum Speichern der Anmeldedaten
-def save_credentials(credentials):
-    with open('credentials.yaml', 'w') as file:
-        yaml.dump(credentials, file)
-
-def get_authenticator():
-    config = load_credentials()
-    authenticator = stauth.Authenticate(
-        config['credentials'],
-        'your_cookie_name',
-        'your_signature_key',
-        cookie_expiry_days=30
-    )
-    return authenticator, config
-
-# Registrierung
-def register_user():
+def register_user_interface():
     st.subheader("Registrieren Sie sich")
     new_username = st.text_input("Benutzername", key="register_user")
     new_email = st.text_input("Email", key="register_email")
@@ -38,13 +14,27 @@ def register_user():
     if st.button("Registrieren"):
         if new_password == confirm_password:
             hashed_password = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
-            config = load_credentials()
-            config['credentials']['usernames'][new_username] = {
-                'email': new_email,
-                'name': new_name,
-                'password': hashed_password
-            }
-            save_credentials(config)
-            st.success("Registrierung erfolgreich")
+            try:
+                register_user(new_username, hashed_password, new_email, new_name)
+                st.success("Registrierung erfolgreich")
+            except Exception as e:
+                st.error(f"Fehler bei der Registrierung: {e}")
         else:
             st.error("Passwörter stimmen nicht überein")
+
+def login_user_interface():
+    st.subheader("Anmelden")
+    username = st.text_input("Benutzername", key="login_user")
+    password = st.text_input("Passwort", type="password", key="login_password")
+    
+    if st.button("Anmelden"):
+        user = get_user(username)
+        if user and bcrypt.checkpw(password.encode(), user[2].encode()):
+            st.session_state.logged_in = True
+            st.session_state.user_id = user[0]
+            st.session_state.username = username
+            st.session_state.name = user[4]
+            st.success("Anmeldung erfolgreich")
+            st.experimental_rerun()
+        else:
+            st.error("Benutzername oder Passwort ist falsch")
