@@ -1,3 +1,4 @@
+from PIL import Image
 import streamlit as st
 from auth import login_user_interface, register_user_interface
 
@@ -5,7 +6,9 @@ st.set_page_config(page_title="FitEKG", page_icon="🏋️")
 
 st.title("FitEKG")
 
-st.sidebar.success("Wählen Sie eine Seite aus dem Menü")
+logo = Image.open("C:\Leitungskurve2\logo.png")  # Ersetzen Sie den Pfad durch den tatsächlichen Pfad Ihres Logos
+st.image(logo, width=200)
+st.sidebar.success("login sie sich ein oder registrieren sie sich, um die App zu nutzen.")
 
 st.sidebar.title("Willkommen")
 
@@ -46,14 +49,14 @@ if st.session_state.logged_in:
     if page == "Startseite":
         st.write("Willkommen bei FitEKG!")
     elif page == "EKG-Daten":
-        from  ekg_page import show_ekg_page
+        from pages.Aekg_page import show_ekg_page
         show_ekg_page()
     elif page == "Fitnessdaten":
-        from fitness_page import show_fitness_page
+        from pages.Bfitness_page import show_fitness_page
         show_fitness_page()
     elif page == "KI-Funktionen":
-        from ki_page import show_ki_page
+        from pages.Cki_page import show_ki_page
         show_ki_page()
     elif page == "Datenbank-Verwaltung":
-        from db_management_page import show_db_management_page
+        from pages.Ddb_management_page import show_db_management_page
         show_db_management_page()
