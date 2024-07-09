@@ -49,11 +49,8 @@ if st.session_state.logged_in:
     if page == "Startseite":
         st.write("Willkommen bei FitEKG!")
     elif page == "EKG-Daten":
-        from pages.Aekg_page import show_ekg_page
-        show_ekg_page()
-    elif page == "EKG-Daten hochladen":
-         from pages.Aekg_page import show_ekg_upload_page
-         show_ekg_upload_page()
+        from pages.Aekgpage import ekg_page
+        ekg_page()
     elif page == "Fitnessdaten":
         from pages.Bfitness_page import show_fitness_page
         show_fitness_page()

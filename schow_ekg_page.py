@@ -4,8 +4,7 @@ from PIL import Image
 from ekgdata import EKGDaten
 import plotly.graph_objects as go
 
-def show_ekg_page():
-    st.title("EKG-Daten")
+def show_ekg():
     st.write("### Person auswählen")
 
     personen_daten = Person.lade_personen_daten()
