@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
-def ekg_upload_page():
+def ekg_upload():
     uploaded_file = st.file_uploader("Wählen Sie eine Datei aus", type=["csv", "txt"])
 
     if uploaded_file is not None:

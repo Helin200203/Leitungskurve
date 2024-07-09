@@ -1,7 +1,9 @@
 import streamlit as st
-from schow_ekg_page import show_ekg
-from schow_ekg_upload_page import ekg_upload_page
-from herz import heart_info 
+
+
+from herz import heart_info
+from schow_ekg import show_ekg
+from schow_ekg_upload import ekg_upload 
 
 def ekg_page():
     st.subheader(f"Willkommen, {st.session_state['username']}!")
@@ -18,6 +20,6 @@ def ekg_page():
     with tabs[2]:
         st.write("Um EKG-Daten hochzuladen, klicke auf 'Upload EKG-Daten'.")
         if st.button("Upload EKG-Daten"):
-            ekg_upload_page()
+            ekg_upload()
 
 ekg_page()
