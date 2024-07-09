@@ -51,9 +51,13 @@ if st.session_state.logged_in:
     elif page == "EKG-Daten":
         from pages.Aekg_page import show_ekg_page
         show_ekg_page()
+    elif page == "EKG-Daten hochladen":
+         from pages.Aekg_page import show_ekg_upload_page
+         show_ekg_upload_page()
     elif page == "Fitnessdaten":
         from pages.Bfitness_page import show_fitness_page
         show_fitness_page()
+        
     elif page == "KI-Funktionen":
         from pages.Cki_page import show_ki_page
         show_ki_page()
