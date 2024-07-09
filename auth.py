@@ -1,4 +1,3 @@
-# auth.py
 import streamlit as st
 import sqlite3
 import bcrypt
@@ -39,9 +38,18 @@ def login_user_interface():
         if user and bcrypt.checkpw(password.encode(), user[2].encode()):
             st.session_state.logged_in = True
             st.session_state.user_id = user[0]
+            st.session_state.username = username
             st.success("Login erfolgreich")
         else:
             st.error("Benutzername/Passwort ist inkorrekt")
+
+    if st.session_state.get('logged_in'):
+        st.write("Eingeloggt als:", st.session_state.username)
+        change_password_interface(st.session_state.user_id)
+    elif st.session_state.get('reset_password_flag'):
+        reset_password_interface(st.session_state.user_id)
+    else:
+        forgot_password_interface()
 
 def get_user(username):
     conn = sqlite3.connect('data.db')
@@ -60,9 +68,9 @@ def forgot_password_interface():
     if st.button("Passwort zurücksetzen"):
         user = get_user_by_email(email)
         if user:
-            new_password = reset_password(user[0])
-            st.write(f"Ihr neues Passwort lautet: {new_password}")
-            st.success("Ein neues Passwort wurde an Ihre E-Mail-Adresse gesendet.")
+            st.session_state.reset_password_flag = True
+            st.session_state.user_id = user[0]
+            st.success("Bitte setzen Sie Ihr neues Passwort.")
         else:
             st.error("E-Mail-Adresse nicht gefunden")
 
@@ -74,12 +82,50 @@ def get_user_by_email(email):
     conn.close()
     return user
 
-def reset_password(user_id):
-    new_password = "newpassword123"  # Hier können Sie ein zufälliges Passwort generieren
-    hashed_password = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
+def reset_password_interface(user_id):
+    st.subheader("Neues Passwort setzen")
+    new_password = st.text_input("Neues Passwort", type="password", key="new_password_reset")
+    confirm_new_password = st.text_input("Neues Passwort bestätigen", type="password", key="confirm_new_password_reset")
+    
+    if st.button("Passwort setzen"):
+        if new_password == confirm_new_password:
+            hashed_password = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
+            update_password(user_id, hashed_password)
+            st.success("Passwort erfolgreich gesetzt. Bitte einloggen.")
+            st.session_state.reset_password_flag = False
+        else:
+            st.error("Die neuen Passwörter stimmen nicht überein")
+
+def change_password_interface(user_id):
+    st.subheader("Passwort ändern")
+    current_password = st.text_input("Aktuelles Passwort", type="password", key="current_password")
+    new_password = st.text_input("Neues Passwort", type="password", key="new_password")
+    confirm_new_password = st.text_input("Neues Passwort bestätigen", type="password", key="confirm_new_password")
+    
+    if st.button("Passwort ändern"):
+        user = get_user_by_id(user_id)
+        if user and bcrypt.checkpw(current_password.encode(), user[2].encode()):
+            if new_password == confirm_new_password:
+                hashed_password = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
+                update_password(user_id, hashed_password)
+                st.success("Passwort erfolgreich geändert")
+            else:
+                st.error("Die neuen Passwörter stimmen nicht überein")
+        else:
+            st.error("Aktuelles Passwort ist falsch")
+
+def get_user_by_id(user_id):
+    conn = sqlite3.connect('data.db')
+    c = conn.cursor()
+    c.execute('SELECT * FROM users WHERE id = ?', (user_id,))
+    user = c.fetchone()
+    conn.close()
+    return user
+
+def update_password(user_id, hashed_password):
     conn = sqlite3.connect('data.db')
     c = conn.cursor()
     c.execute('UPDATE users SET password = ? WHERE id = ?', (hashed_password, user_id))
     conn.commit()
     conn.close()
-    return new_password
+
