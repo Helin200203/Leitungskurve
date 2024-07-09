@@ -46,7 +46,7 @@ if st.session_state.logged_in:
     if page == "Startseite":
         st.write("Willkommen bei FitEKG!")
     elif page == "EKG-Daten":
-        from ekg_page import show_ekg_page
+        from  ekg_page import show_ekg_page
         show_ekg_page()
     elif page == "Fitnessdaten":
         from fitness_page import show_fitness_page
