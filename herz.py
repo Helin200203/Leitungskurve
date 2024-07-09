@@ -1,10 +1,13 @@
 
-# herz_info.py
+
+
+from streamlit import st
+
 
 def heart_info():
-    return """
-    ### Informationen über das Herz und EKG-Daten
+    st.title("Informationen über das Herz und EKG-Daten")
 
+    st.write('''
     #### Das Herz: Unser lebenswichtiges Organ
 
     Das Herz ist ein Muskel, der als Pumpe fungiert, um Blut durch den gesamten Körper zu transportieren. Es besteht aus vier Kammern: zwei Vorhöfen und zwei Ventrikeln. Durch regelmäßige Kontraktionen sorgt das Herz dafür, dass Sauerstoff und Nährstoffe in alle Körperzellen gelangen.
@@ -43,4 +46,4 @@ def heart_info():
     ### Fazit
 
     Das Herz und die EKG-Daten liefern wichtige Informationen über Ihre Herzgesundheit. Mit einem EKG können potenzielle Probleme frühzeitig erkannt und behandelt werden. Nutzen Sie diese Informationen, um Ihre Gesundheit zu überwachen und bei Bedarf medizinische Hilfe in Anspruch zu nehmen.
-    """
+    ''')
