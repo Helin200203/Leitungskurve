@@ -1,41 +1,33 @@
-# bmi_nutrition.py
 import streamlit as st
+from utils import berechne_bmi, berechne_kalorienbedarf, bmi_bereich
 import pandas as pd
 import plotly.express as px
 from PIL import Image
-from database import add_weight, add_bmi, get_weights, get_bmi
-from utils import berechne_bmi, berechne_kalorienbedarf, bmi_bereich
-from language import languages
+from database import add_weight, add_bmi, get_weights, get_bmi, add_meal, get_meals, add_workout, get_workouts
 
 def display_bmi_nutrition_section(user_data):
-    language = st.session_state.language
-    lang = languages[language]
+    st.write("### BMI berechnen")
     
-    st.write(f"# {lang['bmi_nutrition']}")
-    st.write(f"### {lang['bmi_calculate']}")
-    
-    # Eingabefelder für die BMI-Berechnung
-    gewicht = st.number_input(lang['weight'], min_value=0.0, step=0.1)
-    groesse = st.number_input(lang['height'], min_value=0.0, step=0.1)
-    geschlecht = st.selectbox(lang['gender'], [lang['male'], lang['female']])
+    gewicht = st.number_input("Gewicht (kg)", min_value=0.0, step=0.1)
+    groesse = st.number_input("Größe (cm)", min_value=0.0, step=0.1)
+    geschlecht = st.selectbox("Geschlecht", ["Männlich", "Weiblich"])
 
     if groesse > 0:
         bmi = berechne_bmi(gewicht, groesse)
-        st.write(lang['bmi_is'].format(bmi))
+        st.write(f"Ihr BMI ist: {bmi:.2f}")
         bmi_status = bmi_bereich(bmi)
-        st.write(lang['bmi_status'].format(bmi_status))
+        st.write(f"BMI-Status: {bmi_status}")
     else:
-        st.write(lang['valid_height'])
+        st.write("Bitte geben Sie eine gültige Größe ein.")
 
-    st.write(f"### {lang['daily_calorie']}")
+    st.write("### Täglicher Kalorienbedarf")
     
-    # Eingabefelder für den Kalorienbedarf
-    alter = st.number_input(lang['age'], min_value=0)
-    aktivitaetslevel = st.selectbox(lang['activity_level'], lang['activity_levels'])
+    alter = st.number_input("Alter", min_value=0)
+    aktivitaetslevel = st.selectbox("Aktivitätslevel", ["Wenig aktiv", "Mäßig aktiv", "Aktiv", "Sehr aktiv"])
     
     kalorienbedarf = berechne_kalorienbedarf(gewicht, groesse, alter, geschlecht, aktivitaetslevel)
-    st.write(lang['calorie_need'].format(kalorienbedarf))
-    if st.button(lang['save_data']):
+    st.write(f"Ihr täglicher Kalorienbedarf beträgt: {kalorienbedarf:.2f} Kalorien")
+    if st.button("Daten speichern"):
         user_data['gewicht'] = gewicht
         user_data['groesse'] = groesse
         user_data['geschlecht'] = geschlecht
@@ -45,42 +37,65 @@ def display_bmi_nutrition_section(user_data):
         user_data['kalorienbedarf'] = kalorienbedarf
         add_weight(st.session_state.user_id, pd.Timestamp.now().isoformat(), gewicht)
         add_bmi(st.session_state.user_id, pd.Timestamp.now().isoformat(), bmi)
-        st.success(lang['success_save'])
+        st.success("Daten erfolgreich gespeichert")
 
-    tab1, tab2 = st.tabs([lang['weight_bmi_progress'], lang['positive']])
+    st.write("### Mahlzeiten hinzufügen")
+    meal_date = st.date_input("Datum der Mahlzeit")
+    meal_type = st.selectbox("Art der Mahlzeit", ["Frühstück", "Mittagessen", "Abendessen", "Snack"])
+    meal = st.text_input("Beschreibung der Mahlzeit")
+    meal_calories = st.number_input("Kalorien (kcal)", min_value=0.0, step=0.1)
+    if st.button("Mahlzeit hinzufügen"):
+        add_meal(st.session_state.user_id, meal_date.isoformat(), meal_type, meal, meal_calories)
+        st.success("Mahlzeit erfolgreich hinzugefügt")
+
+    st.write("### Aktivitäten hinzufügen")
+    workout_date = st.date_input("Datum der Aktivität")
+    workout = st.text_input("Beschreibung der Aktivität")
+    workout_duration = st.number_input("Dauer (Minuten)", min_value=0)
+    workout_calories = st.number_input("Kalorienverbrauch (kcal)", min_value=0.0, step=0.1)
+    if st.button("Aktivität hinzufügen"):
+        add_workout(st.session_state.user_id, workout_date.isoformat(), workout, workout_duration, workout_calories)
+        st.success("Aktivität erfolgreich hinzugefügt")
+
+    tab1, tab2, tab3 = st.tabs(["Gewichts- und BMI-Verlauf", "Mahlzeitenverlauf", "Aktivitätenverlauf"])
     try: 
         with tab1:
-            st.write(f"### {lang['weight_data']}")
+            st.write("### Gewichtsdaten")
             weights = get_weights(st.session_state.user_id)
             if weights:
                 weight_df = pd.DataFrame(weights, columns=["Datum", "Gewicht"])
                 weight_df["Datum"] = pd.to_datetime(weight_df["Datum"])
-                fig = px.line(weight_df, x="Datum", y="Gewicht", title=lang['weight_progress'])
+                fig = px.line(weight_df, x="Datum", y="Gewicht", title="Gewichtsverlauf")
                 st.plotly_chart(fig)
             else:
-                st.write(lang['no_weight_data'])
+                st.write("Keine Gewichtsdaten vorhanden")
 
-            st.write(f"### {lang['bmi_progress']}")
+            st.write("### BMI-Verlauf")
             bmis = get_bmi(st.session_state.user_id)
             if bmis:
                 bmi_df = pd.DataFrame(bmis, columns=["Datum", "BMI"])
                 bmi_df["Datum"] = pd.to_datetime(bmi_df["Datum"])
-                fig = px.line(bmi_df, x="Datum", y="BMI", title=lang['bmi_progress'])
+                fig = px.line(bmi_df, x="Datum", y="BMI", title="BMI-Verlauf")
                 st.plotly_chart(fig)
             else:
-                st.write(lang['no_bmi_data'])
-        with tab2:
-            st.write(f"### {lang['pyramid']}")
-            pyramide_bild = Image.open("images.jpeg")
-            st.image(pyramide_bild, caption=lang['pyramid'])
+                st.write("Keine BMI-Daten vorhanden")
 
-            st.write(f"### {lang['body_positivity_quotes']}")
-            zitate = [
-                "Liebe deinen Körper, er ist der einzige, den du hast.",
-                "Schönheit kommt in allen Formen und Größen.",
-                "Dein Körper ist dein Zuhause, behandle ihn mit Respekt."
-            ]
-            for zitat in zitate:
-                st.write(f"- {zitat}")
+        with tab2:
+            st.write("### Mahlzeitenverlauf")
+            meals = get_meals(st.session_state.user_id)
+            if meals:
+                meals_df = pd.DataFrame(meals, columns=["Datum", "Art", "Beschreibung", "Kalorien"])
+                st.dataframe(meals_df)
+            else:
+                st.write("Keine Mahlzeitendaten vorhanden")
+
+        with tab3:
+            st.write("### Aktivitätenverlauf")
+            workouts = get_workouts(st.session_state.user_id)
+            if workouts:
+                workouts_df = pd.DataFrame(workouts, columns=["Datum", "Beschreibung", "Dauer (Minuten)", "Kalorienverbrauch"])
+                st.dataframe(workouts_df)
+            else:
+                st.write("Keine Aktivitätendaten vorhanden")
     except:
-        st.write(lang['no_data'])
+        st.write("Keine Daten vorhanden")
