@@ -49,15 +49,15 @@ if st.session_state.logged_in:
     if page == "Startseite":
         st.write("Willkommen bei FitEKG!")
     elif page == "EKG-Daten":
-        from pages.Aekgpage import ekg_page
+        from  _1ekgpage import ekg_page
         ekg_page()
     elif page == "Fitnessdaten":
-        from pages.Bfitness_page import show_fitness_page
+        from _2fitnesspage import show_fitness_page
         show_fitness_page()
         
     elif page == "KI-Funktionen":
-        from pages.Cki_page import show_ki_page
+        from _3kipage import show_ki_page
         show_ki_page()
     elif page == "Datenbank-Verwaltung":
-        from pages.Ddb_management_page import show_db_management_page
+        from _4dbmanagementpage import show_db_management_page
         show_db_management_page()

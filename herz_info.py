@@ -15,7 +15,6 @@ def heart_info():
     - **Ventrikel**: Untere Kammern, die das Blut in den Körper und die Lunge pumpen.
     - **Herzklappen**: Sorgen dafür, dass das Blut in die richtige Richtung fließt.
 
-    ![Herzstruktur](https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Diagram_of_the_human_heart_%28cropped%29.svg/800px-Diagram_of_the_human_heart_%28cropped%29.svg.png)
 
     #### Das Elektrokardiogramm (EKG)
 
@@ -25,8 +24,6 @@ def heart_info():
     - **P-Welle**: Zeigt die elektrische Aktivität der Vorhöfe.
     - **QRS-Komplex**: Stellt die Erregung der Ventrikel dar.
     - **T-Welle**: Zeigt die Erholungsphase der Ventrikel.
-
-    ![EKG-Daten](https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/SinusRhythmLabels.svg/1024px-SinusRhythmLabels.svg.png)
 
     #### EKG-Daten verstehen
 
