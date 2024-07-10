@@ -2,9 +2,13 @@ import streamlit as st
 import time
 from openai import OpenAI
 
+st._bottom
+openai_api_key = st.text_input("OpenAI API Key", type="password")
+assistant_id = st.text_input("Assistant ID")
+
 # Set your OpenAI API key and assistant ID here
-api_key = st.secrets["openai_apikey"]
-assistant_id = st.secrets["assistant_id"]
+api_key = openai_api_key
+assistant_id = assistant_id
 
 # Set openAi client , assistant ai and assistant ai thread
 @st.cache_resource
