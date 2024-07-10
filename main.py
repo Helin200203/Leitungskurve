@@ -61,12 +61,22 @@ def main():
             from _3kipage import show_ki_page
             show_ki_page()
         elif page == "Datenbank-Verwaltung":
-            from _4dbmanagementpage import show_db_management_page
-            show_db_management_page()
-<<<<<<< HEAD
+            # Passwortabfrage
+            if 'db_admin' not in st.session_state:
+                st.session_state.db_admin = False
+
+            if not st.session_state.db_admin:
+                password = st.text_input("Geben Sie das Passwort ein", type="password")
+                if password == "zu9gierig":
+                    st.session_state.db_admin = True
+                    st.success("Zugriff gewährt!")
+                else:
+                    st.error("Falsches Passwort")
+
+            if st.session_state.db_admin:
+                from _4dbmanagementpage import show_db_management_page
+                show_db_management_page()
 
 if __name__ == "__main__":
     main()
-=======
-     
->>>>>>> a622fa8d3a9be039d2fb7608e63221e9e16c8859
+
