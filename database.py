@@ -15,7 +15,10 @@ def init_db():
             username TEXT UNIQUE,
             password TEXT,
             email TEXT,
-            name TEXT
+            name TEXT,
+            age INTEGER,
+            weight REAL,
+            height REAL
         )
     ''')
 
@@ -66,13 +69,13 @@ def init_db():
     conn.commit()
     conn.close()
 
-def register_user(username, password, email, name):
+def register_user(username, password, email, name, age, weight, height):
     conn = sqlite3.connect('data.db')
     c = conn.cursor()
     c.execute('''
-        INSERT INTO users (username, password, email, name)
-        VALUES (?, ?, ?, ?)
-    ''', (username, password, email, name))
+        INSERT INTO users (username, password, email, name, age, weight, height)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ''', (username, password, email, name, age, weight, height))
     conn.commit()
     conn.close()
 

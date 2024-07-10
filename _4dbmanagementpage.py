@@ -3,7 +3,7 @@ from database import get_user, get_all_users, get_all_meals, get_all_weights, ge
 import json
 import os
 import sqlite3
-
+init_db()
 def show_db_management_page():
     st.title("Datenbank-Verwaltung")
     

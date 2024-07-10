@@ -1,5 +1,5 @@
 
-from streamlit import st
+import streamlit as st
 
 
 def heart_info():
