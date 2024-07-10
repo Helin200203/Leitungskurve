@@ -8,7 +8,7 @@ import scipy.signal as signal
 import EKGdata2 as EKGdata
 
 def display_hr_analysis():
-    st.title("Herzfrequenzvariabilitätsanalyse (HRV)")
+    st.title("Herzfrequenz")
 
     uploaded_file = st.file_uploader("Laden Sie Ihre EKG-Daten hoch", type="csv")
     if uploaded_file is not None:
