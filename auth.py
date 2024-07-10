@@ -128,4 +128,3 @@ def update_password(user_id, hashed_password):
     c.execute('UPDATE users SET password = ? WHERE id = ?', (hashed_password, user_id))
     conn.commit()
     conn.close()
-

@@ -1,7 +1,9 @@
 # meals_sport.py
 import streamlit as st
-from database import add_meal, get_meals, add_workout, get_workouts
+from database import add_meal, get_meals, add_workout, get_workouts, add_weight, add_bmi, get_weights, get_bmi
 import pandas as pd
+import plotly.express as px
+from utils import berechne_bmi, berechne_kalorienbedarf, bmi_bereich
 
 def track_meals_sports(user_id, user_data):
     st.write("# Mahlzeiten & Sport")
