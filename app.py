@@ -2,23 +2,17 @@ import streamlit as st
 import time
 from openai import OpenAI
 
-st._bottom
+# Input fields for OpenAI API Key and Assistant ID
 openai_api_key = st.text_input("OpenAI API Key", type="password")
 assistant_id = st.text_input("Assistant ID")
 
-# Set your OpenAI API key and assistant ID here
-api_key = openai_api_key
-assistant_id = assistant_id
-
 if openai_api_key and assistant_id:
     st.write("OpenAI API Key and Assistant ID have been entered.")
-    st.write(f"OpenAI API Key: {openai_api_key}")
-    st.write(f"Assistant ID: {assistant_id}")
 
-    # Set openAi client , assistant ai and assistant ai thread
+    # Set openAi client, assistant ai, and assistant ai thread
     @st.cache_resource
     def load_openai_client_and_assistant():
-        client = OpenAI(api_key=api_key)
+        client = OpenAI(api_key=openai_api_key)
         my_assistant = client.beta.assistants.retrieve(assistant_id)
         thread = client.beta.threads.create()
 
@@ -26,7 +20,7 @@ if openai_api_key and assistant_id:
 
     client, my_assistant, assistant_thread = load_openai_client_and_assistant()
 
-    # Check in loop if assistant ai parse our request
+    # Check in loop if assistant ai parses our request
     def wait_on_run(run, thread):
         while run.status == "queued" or run.status == "in_progress":
             run = client.beta.threads.runs.retrieve(
@@ -65,7 +59,7 @@ if openai_api_key and assistant_id:
         st.session_state.user_input = st.session_state.query
         st.session_state.query = ''
 
-    st.title("FitEKG helfer")
+    st.title("FitEKG Helper")
 
     st.text_input("Play with me:", key='query', on_change=submit)
 
@@ -75,7 +69,7 @@ if openai_api_key and assistant_id:
 
     if user_input:
         result = get_assistant_response(user_input)
-        st.header('Assistant :blue[cool] :pizza:', divider='rainbow')
+        st.header('Assistant Response:')
         st.text(result)
 else:
     st.write("Please enter both the OpenAI API Key and Assistant ID.")
