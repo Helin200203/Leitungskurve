@@ -4,8 +4,13 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import scipy.signal as signal
+<<<<<<< HEAD
 from database import get_user, init_db
 init_db()
+=======
+from database import get_user
+
+>>>>>>> a622fa8d3a9be039d2fb7608e63221e9e16c8859
 class EKGdata:
 
     def __init__(self, df, person_info):

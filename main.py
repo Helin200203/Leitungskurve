@@ -63,6 +63,10 @@ def main():
         elif page == "Datenbank-Verwaltung":
             from _4dbmanagementpage import show_db_management_page
             show_db_management_page()
+<<<<<<< HEAD
 
 if __name__ == "__main__":
     main()
+=======
+     
+>>>>>>> a622fa8d3a9be039d2fb7608e63221e9e16c8859
