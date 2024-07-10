@@ -8,7 +8,7 @@ def main():
 
     st.title("FitEKG")
 
-    logo = Image.open("logo.png")  # Ersetzen Sie den Pfad durch den tatsächlichen Pfad Ihres Logos
+    logo = Image.open("final_logo_in_black_circle.png")  
     st.image(logo, width=200)
     st.sidebar.success("login sie sich ein oder registrieren sie sich, um die App zu nutzen.")
 
